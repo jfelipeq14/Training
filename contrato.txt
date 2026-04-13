@@ -1,0 +1,156 @@
+La franquicia de comidas Grandma's Food actualmente cuenta con más de 40 restaurantes en el país y desea adquirir un sistema basado en nube para la gestión de sus pedidos a domicilio. Para esto ha solicitado que realice un MVP de este sistema para una prueba piloto en una de sus sedes de Bogotá. Luego del levantamiento inicial de las necesidades de la cadena, se sabe lo siguiente:
+La cadena vende exclusivamente combos que contienen una comida completa y bebida para una persona, de los combos se tiene la información
+- Nombre de fantasía del combo (Ejemplo: COMBO SUPER CHEESE BURGER DOBLE) Máximo 255 caracteres. El nombre se guardará en Base de datos en mayúsculas y debe ser único.
+- Categoría del producto: Un enumerado con los siguientes valores
+    HAMBURGERS_AND_HOTDOGS (combos de hamburguesas, perritos calientes)
+    CHICKEN: (Pollo frito, combos de alas, tiritas de pollo, etc)
+    FISH: (Croquetas de pescado, filete de tilapia, ...)
+    MEATS: (Parrilla, Chuleta, ...)
+    DESSERTS: (Cheese cake con helado, Pie de Limón, Combo de roles de canela)
+    VEGAN_FOOD (Cualquier combo con ingredientes veganos)
+    KIDS_MEALS: (Combos para niños)
+- Descripción: Texto con el contenido del combo (Ejemplo: Hamburguesa pan de ajonjolí, doble carne de 200gr, queso cheddar, papas fritas y gaseosa de 350ml) Máximo 511 caracteres.
+- Precio del combo sin IVA: Número de coma flotante mayor a cero, máximo dos decimales.
+- Flag booleano que indica si el combo está disponible para la venta.
+
+Cuando un cliente realiza por primera vez un pedido a domicilio vía WhatsApp se solicitan los siguientes datos, todos son obligatorios.
+- Número documento: Incluye tipo (CC, CE, P,...) guión y número, máximo 20 caracteres.
+- Nombre y apellido: Máximo 255 caracteres.
+- Email: Máximo 255 caracteres.
+- Número de celular: Máximo 10 dígitos.
+- Dirección de envío: Máximo 500 caracteres.
+
+Una vez registrado el cliente podrá hacer cualquier cantidad de pedidos durante el horario de servicio. Para simplificar el MVP, se asumirá que cada domicilio consta de una o más unidades de un único combo. Para ejecutar un pedido se colecta la siguiente información, todos los campos son obligatorios.
+- Fecha y hora en la que se realizó el pedido
+- Documento del cliente.
+- Id del producto, que es un UUID de uso interno en la BD del sistema.
+- Cantidad, entero mayor o igual que 1 y menor a 100.
+- Información adicional (Ejemplo: Hamburguesa sin salsa de tomate) máximo 511 caracteres, puede ser String vacío.
+
+Los siguientes campos son calculados, por lo que no deben ingresarse durante la creación del
+pedido.
+- Subtotal sin IVA valor numérico a dos decimales.
+- Valor IVA (impuesto 19%) valor numérico a dos decimales.
+- Total incluyendo IVA valor numérico a dos decimales, debe ser igual a la suma de los dos valores anteriores.
+- Flag booleano que indica si el producto ha sido entregado o no, inicialmente este campo es Falso.
+- Fecha y hora de entrega: Inicialmente este campo es NULL y se actualizará cuando se realice la entrega.
+
+Los endpoints a desarrollar son los siguientes:
+
+Clientes:
+- Crear cliente:
+    Cuerpo:
+        - document: "CC-12345678"
+        - name: "Juan Pérez"
+        - email: "juan.perez@example.com"
+        - phone: "3001234567"
+        - address: "Calle 123 #45-67, Bogotá"
+    Response:
+        201 - CREATED: Json con la información del cliente creado. Por motivos de seguridad el Id autoincremental de la BD nunca se publica, y el campo que se usa para acceder al cliente vía GET es el número de documento.
+        409 - CONFLICT: Cliente con número de documento ya existe.
+        400 - BAD REQUEST: Datos del cliente inválidos o incompletos.
+        500 - INTERNAL SERVER ERROR: Error general del servidor (incluir traza de excepción en respuesta).
+
+- Consultar cliente:
+    Parametro:
+        - document (número de documento del cliente).
+    Response:
+        200 - OK: Se devuelve respuesta con la información del cliente. Por motivos de seguridad el Id autoincremental de la BD nunca se publica.
+        404 - NOT FOUND: Cliente no encontrado.
+        400 - BAD REQUEST: Formato de documento inválido.
+        500 - INTERNAL SERVER ERROR: Error general del servidor (incluir traza de excepción en respuesta).
+
+- Actualizar cliente:
+    Parametro:
+        - document (número de documento del cliente).
+    Cuerpo:
+        - name: "Juan Pérez"
+        - email: "juan.perez@example.com"
+        - phone: "3001234567"
+        - address: "Calle 123 #45-67, Bogotá"
+    Response:
+        204 - NO CONTENT: El cuerpo del response es vacío.
+        404 - NOT FOUND: Cliente no encontrado.
+        409 - CONFLICT: Datos del cliente inválidos o incompletos.
+        400 - BAD REQUEST: Error general del servidor (incluir traza de excepción en respuesta).
+
+- Eliminar cliente (Si el cliente tiene pedidos registrados, estos se borrarán de la BD):
+    Parametro:
+        - document (número de documento del cliente).
+    Response:
+        204 - NO CONTENT: El cuerpo del response es vacío.
+        404 - NOT FOUND: No existe cliente con el número de documento suministrado.
+        400 - BAD REQUEST: Formato de documento inválido.
+        500 - INTERNAL SERVER ERROR: Error general del servidor (incluir traza de excepción en respuesta).
+
+Combos:
+- Crear combo:
+    Cuerpo:
+        - name: "COMBO SUPER CHEESE BURGER DOBLE"
+        - category: "HAMBURGERS_AND_HOTDOGS"
+        - description: "Hamburguesa pan de ajonjolí, doble carne de 200gr, queso cheddar, papas fritas y gaseosa de 350ml"
+        - price: 15000.00
+        - available: true
+    Response:
+        201 - CREATED: Json con la información del producto creado. Por motivos de seguridad el Id autoincremental de la BD nunca se publica. En el momento de creación del registro en BD se debe generar un UUID y este será el campo que se usa para acceder al cliente vía GET. El nombre de fantasía siempre se guardará en Base de Datos en mayúsculas, independientemente de cómo venga en el Request.
+        409 - CONFLICT: Producto con nombre de fantasía ya existe.
+        400 - BAD REQUEST: Datos del producto inválidos o incompletos.
+        500 - INTERNAL SERVER ERROR: Error general del servidor (incluir traza de excepción en respuesta).
+
+- Consultar combo:
+    Parámetros:
+        - uuid: Identificador único del producto en BD.
+    Response:
+        200 - OK: Se devuelve respuesta con la información del producto, incluyendo UUID.
+        404 - NOT FOUND: Producto no encontrado.
+        400 - BAD REQUEST: Formato de UUID inválido.
+        500 - INTERNAL SERVER ERROR: Error general del servidor (incluir traza de excepción en respuesta).
+
+- Actualizar combo (No se puede modificar el UUID del producto y Al menos debe existir un atributo distinto al valor almacenado en Base de Datos):
+    Parametro:
+        - uuid: Identificador único del producto en BD.
+    Cuerpo:
+        - name: "COMBO SUPER CHEESE BURGER DOBLE"
+        - category: "HAMBURGERS_AND_HOTDOGS"
+        - description: "Hamburguesa pan de ajonjolí, doble carne de 200gr, queso cheddar, papas fritas y gaseosa de 350ml"
+        - price: 18000.00
+        - available: false
+    Response:
+        204 - NO CONTENT: El cuerpo del response es vacío.
+        409 - CONFLICT: No hay ningún campo diferente en el Request.
+        409 - CONFLICT: Ya existe un producto con el nombre fantasía a modificar.
+        400 - BAD REQUEST: Datos del prodcuto inválidos o incompletos.
+        500 - INTERNAL SERVER ERROR: Error general del servidor (incluir traza de excepción en respuesta).
+
+- Eliminar combo (Si el producto pertenece a pedidos registrados, estos se borrarán de la BD. También se puede implementar "borrado lógico" del registro en BD, en este caso, el diseño de la solución queda a cargo del equipo de desarrollo):
+    Parametro:
+        - uuid: Identificador único del producto en BD.
+    Response:
+        204 - NO CONTENT: El cuerpo del response es vacío.
+        404 - NOT FOUND: Producto no encontrado.
+        400 - BAD REQUEST: Formato de UUID inválido.
+        500 - INTERNAL SERVER ERROR: Error general del servidor (incluir traza de excepción en respuesta).
+
+Pedidos:
+- Crear pedido (Los campos calculados no se incluyen en la petición. En el momento de creación del registro en BD se debe generar un UUID y este será el campo que se usa para acceder al cliente vía GET. En el ejemplo el cliente con cédula CC-123456 solicita dos unidades del producto 340e910a-49a7-4d63-9047-220f23696138 con información extra "hamburguesa sin lechuga ni salsa de tomate"):
+    Cuerpo:
+        - document: "CC-12345678"
+        - combo_uuid: "123e4567-e89b-12d3-a456-426614174000"
+        - quantity: 2
+        - additional_info: "Hamburguesa sin salsa de tomate"
+    Response:
+        201 - CREATED: Se devuelve respuesta con la información del pedido, incluyendo todos los campos calculados, así como la fecha/hora de creación del pedido en el servidor. Por motivos de seguridad el Id autoincremental de la BD nunca se publica. UUID del registro del pedido creado en BD. Por defecto el campo deliveredDate es NULL y el campo delivered es false
+        404 - NOT FOUND: Cliente no existe
+        404 - NOT FOUND: Producto no existe
+        400 - BAD REQUEST: Datos del pedido inválidos o incompletos
+        500 - INTERNAL SERVER ERROR: Error general del servidor (incluir traza de excepción en respuesta)
+
+- Actualizar pedido (Se devuelve el pedido actualizado con la fecha y el estado en entregado en True):
+    Parámetros:
+        - uuid = Identificador único del pedido en BD.
+        - timestamp = hora de entrega del producto.
+    Response:
+        200 - OK: Se devuelve respuesta con la información del producto, incluyendo la hora de entrega.
+        404 - NOT FOUND: Producto no encontrado.
+        400 - BAD REQUEST: Formato de UUID inválido.
+        500 - INTERNAL SERVER ERROR: Error general del servidor (incluir traza de excepción en respuesta).
