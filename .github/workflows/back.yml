@@ -81,8 +81,8 @@ jobs:
 
       - name: Test Docker container
         run: |
-          docker run --rm -d --name backend-test -p 8000:8000 training-backend:test || true
-          sleep 30
-          curl -f http://localhost:8000/docs || echo "Backend not ready, continuing..."
+          docker run -d --name backend-test -p 8000:8000 training-backend:test || true
+          sleep 15
+          timeout 10s curl -f http://localhost:8000/docs || echo "Backend not ready, continuing..."
           docker stop backend-test || true
           docker rm backend-test || true
