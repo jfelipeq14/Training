@@ -1,0 +1,38 @@
+# Robots.txt para Grandma's Food
+# https://grandmasfood.com
+
+User-agent: *
+Allow: /
+
+# Prioridades de rastreo
+Crawl-delay: 1
+
+# Sitemap
+Sitemap: https://grandmasfood.com/sitemap.xml
+
+# Bloquear bots no deseados
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# Permitir motores de búsqueda importantes
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# No indexar archivos temporales o de sistema
+Disallow: /temp/
+Disallow: /admin/
+Disallow: /api/
+Disallow: /*.json$
+Disallow: /*?*

@@ -1,10 +1,87 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    
+    <!-- SEO Basic Meta Tags -->
+    <title>Grandma's Food - Delivery de Comida Rápida en Bogotá | Combos Hamburguesas, Pollo, Pescado</title>
+    <meta name="description" content="Grandma's Food - Más de 40 restaurantes en Colombia. Delivery de combos completos: hamburguesas, pollo frito, pescado, parrilla, postres y comida vegana. ¡Pide ahora!" />
+    <meta name="keywords" content="Grandma's Food, delivery comida, hamburguesas Bogotá, pollo frito delivery, pescado frito, parrilla a domicilio, comida rápida, combos comida, restaurante Bogotá, pedidos online" />
+    <meta name="author" content="Grandma's Food" />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="es" />
+    <meta name="geo.region" content="CO-DC" />
+    <meta name="geo.placename" content="Bogotá, Colombia" />
+    <meta name="ICBM" content="4.7110,-74.0721" />
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Grandma's Food - Delivery de Comida Rápida en Bogotá" />
+    <meta property="og:description" content="Más de 40 restaurantes en Colombia. Disfruta de nuestros combos completos: hamburguesas, pollo frito, pescado, parrilla y más. ¡Pide ahora!" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://grandmasfood.com" />
+    <meta property="og:image" content="/og-image.jpg" />
+    <meta property="og:image:alt" content="Grandma's Food - Delivery de comida rápida" />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:site_name" content="Grandma's Food" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Grandma's Food - Delivery de Comida Rápida en Bogotá" />
+    <meta name="twitter:description" content="Más de 40 restaurantes en Colombia. Disfruta de nuestros combos completos. ¡Pide ahora!" />
+    <meta name="twitter:image" content="/twitter-image.jpg" />
+    <meta name="twitter:site" content="@GrandmasFood" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://grandmasfood.com" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    
+    <!-- Structured Data for Restaurant -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "name": "Grandma's Food",
+      "description": "Franquicia de comidas rápidas con más de 40 restaurantes en Colombia. Especializados en combos completos con hamburguesas, pollo frito, pescado, parrilla, postres y opciones veganas.",
+      "url": "https://grandmasfood.com",
+      "telephone": "+57-1-2345678",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Bogotá",
+        "addressRegion": "DC",
+        "addressCountry": "CO"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 4.7110,
+        "longitude": -74.0721
+      },
+      "servesCuisine": ["Comida Rápida", "Hamburguesas", "Pollo Frito", "Pescado", "Parrilla", "Comida Vegana"],
+      "hasMenu": "https://grandmasfood.com/menu",
+      "acceptsReservations": false,
+      "priceRange": "$$",
+      "openingHours": "Mo-Su 11:00-23:00",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.5",
+        "reviewCount": "1250"
+      },
+      "offers": {
+        "@type": "Offer",
+        "availability": "https://schema.org/InStock",
+        "priceCurrency": "COP",
+        "priceRange": "15000-35000"
+      }
+    }
+    </script>
+    
+    <!-- Additional SEO -->
+    <link rel="alternate" hreflang="es" href="https://grandmasfood.com" />
+    <link rel="manifest" href="/manifest.json" />
   </head>
   <body>
     <div id="root"></div>

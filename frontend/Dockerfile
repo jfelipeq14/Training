@@ -14,6 +14,18 @@ RUN pnpm install --frozen-lockfile
 # Copiamos el resto del código
 COPY . .
 
+# Ejecutamos prettier para formatear el código
+RUN pnpm run format || true
+
+# Ejecutamos eslint para corregir automáticamente problemas de linting
+RUN pnpm run lint:fix || true
+
+# Ejecutamos verificación de tipos TypeScript
+RUN pnpm run type-check || true
+
+# Ejecutamos el script combinado de formateo y linting
+RUN pnpm run format:lint || true
+
 EXPOSE 5173
 
 # Health check
